@@ -1,0 +1,42 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Environment files
+.env
+.env.*
+
+# Python packaging
+*.egg-info/
+*.egg
+dist/
+build/
+
+# VSCode and PyCharm settings
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.sock
+
+# Pytest cache
+.pytest_cache/
+.cache/
+
+# MySQL/PostgreSQL data volumes
+data/
+postgres_data/
