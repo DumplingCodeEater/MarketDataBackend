@@ -1,0 +1,42 @@
+import pytest
+from fastapi.testclient import TestClient
+from app.main import app
+from app.models.db import Base, PricePoint, MovingAverage
+from app.core.database import engine, get_db
+from sqlalchemy.orm import sessionmaker
+import time
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+@pytest.fixture(scope="function")
+def db():
+    Base.metadata.create_all(bind=engine)
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        Base.metadata.drop_all(bind=engine)
+
+@pytest.fixture(scope="module")
+def client():
+    return TestClient(app)
+
+def test_end_to_end_pipeline(db, client):
+    # 1. Fetch price via API (simulate cache miss, triggers fetch, DB store, Kafka produce)
+    response = client.get("/prices/latest?symbol=AAPL")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["symbol"] == "AAPL"
+    # 2. Check DB for raw price point
+    price_point = db.query(PricePoint).filter_by(symbol="AAPL").first()
+    assert price_point is not None
+    # 3. Wait for MA consumer to process Kafka event and store MA
+    for _ in range(10):
+        ma = db.query(MovingAverage).filter_by(symbol="AAPL").first()
+        if ma:
+            break
+        time.sleep(1)
+    assert ma is not None
+    assert isinstance(ma.average, float)

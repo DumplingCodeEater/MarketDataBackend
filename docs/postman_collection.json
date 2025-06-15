@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "market-data-api",
+		"name": "Market Data API",
+		"description": "Collection for testing the Market Data API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Checks",
+			"item": [
+				{
+					"name": "Basic Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Database Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/db",
+							"host": ["{{base_url}}"],
+							"path": ["health", "db"]
+						}
+					}
+				},
+				{
+					"name": "Redis Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/redis",
+							"host": ["{{base_url}}"],
+							"path": ["health", "redis"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Prices",
+			"item": [
+				{
+					"name": "Get Latest Price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/prices/latest?symbol=AAPL&provider=finnhub",
+							"host": ["{{base_url}}"],
+							"path": ["prices", "latest"],
+							"query": [
+								{
+									"key": "symbol",
+									"value": "AAPL"
+								},
+								{
+									"key": "provider",
+									"value": "finnhub"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Start Price Polling",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"symbols\": [\"AAPL\", \"MSFT\"],\n    \"interval\": 60\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prices/poll",
+							"host": ["{{base_url}}"],
+							"path": ["prices", "poll"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+} 
