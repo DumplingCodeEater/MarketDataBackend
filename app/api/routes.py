@@ -54,7 +54,7 @@ async def get_latest_price(
     cache_key = f"price:{symbol}:{provider}"
     
     async def fetch_price():
-        price = market_data_provider.fetch_price(symbol.upper())
+        price = await market_data_provider.fetch_price(symbol.upper())
         if price is None:
             raise HTTPException(status_code=502, detail="Failed to fetch price from provider.")
         return price

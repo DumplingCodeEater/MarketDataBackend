@@ -31,39 +31,3 @@ app.add_middleware(RateLimitMiddleware)
 
 # Include the main router
 app.include_router(router, prefix="/prices")
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint."""
-    return {"status": "healthy"}
-
-@app.get("/health/db")
-async def db_health_check(db: Session = Depends(get_db)):
-    """Database health check endpoint."""
-    try:
-        # Try to execute a simple query
-        db.execute("SELECT 1")
-        return {"status": "healthy", "database": "connected"}
-    except Exception as e:
-        return {"status": "unhealthy", "database": str(e)}
-
-@app.get("/health/redis")
-async def redis_health_check():
-    """Redis health check endpoint."""
-    try:
-        redis_client = redis.from_url(settings.redis_url)
-        await redis_client.ping()
-        return {"status": "healthy", "redis": "connected"}
-    except Exception as e:
-        return {"status": "unhealthy", "redis": str(e)}
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Handle graceful shutdown."""
-    # Close database connections
-    db = next(get_db())
-    db.close()
-    
-    # Close Redis connections
-    redis_client = redis.from_url(settings.redis_url)
-    await redis_client.close()

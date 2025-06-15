@@ -2,12 +2,15 @@ from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 import time
 from app.services.redis_cache import redis_client
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.types import ASGIApp
 
-class RateLimitMiddleware:
-    def __init__(self, requests_per_minute: int = 30):
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app: ASGIApp, requests_per_minute: int = 30):
+        super().__init__(app)
         self.requests_per_minute = requests_per_minute
 
-    async def __call__(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next):
         # Get client IP
         client_ip = request.client.host
         

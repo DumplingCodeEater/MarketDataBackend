@@ -7,47 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "Health Checks",
-			"item": [
-				{
-					"name": "Basic Health Check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/health",
-							"host": ["{{base_url}}"],
-							"path": ["health"]
-						}
-					}
-				},
-				{
-					"name": "Database Health Check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/health/db",
-							"host": ["{{base_url}}"],
-							"path": ["health", "db"]
-						}
-					}
-				},
-				{
-					"name": "Redis Health Check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/health/redis",
-							"host": ["{{base_url}}"],
-							"path": ["health", "redis"]
-						}
-					}
-				}
-			]
-		},
-		{
 			"name": "Prices",
 			"item": [
 				{
