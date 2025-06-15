@@ -86,7 +86,7 @@ jobs:
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
         REDIS_URL: redis://localhost:6379/0
-        KAFKA_BOOTSTRAP_SERVERS: localhost:9092
+        KAFKA_BOOTSTRAP_SERVERS: ${{ secrets.KAFKA_BOOTSTRAP_SERVERS }}
         FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
       run: |
         pytest --cov=app tests/ --cov-report=xml
