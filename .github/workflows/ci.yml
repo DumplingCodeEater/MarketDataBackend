@@ -55,8 +55,6 @@ jobs:
           ALLOW_PLAINTEXT_LISTENER: yes
         ports:
           - 9092:9092
-        depends_on:
-          - zookeeper
         options: >-
           --health-cmd "kafka-topics.sh --bootstrap-server localhost:9092 --list"
           --health-interval 10s
