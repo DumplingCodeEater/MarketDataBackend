@@ -3,6 +3,7 @@ from app.core.config import get_settings
 from typing import Optional, Any, Callable
 import json
 from datetime import datetime
+import asyncio
 
 settings = get_settings()
 REDIS_URL = settings.redis_url
@@ -43,7 +44,9 @@ async def get_or_set_cache(key: str, fetch_func: Callable, expire: int = 300) ->
     
     # If not in cache, fetch the value
     value = await fetch_func()
-    
+    # Extra safety: if value is a coroutine, await it
+    if asyncio.iscoroutine(value):
+        value = await value
     # Cache the value
     await set_cache(key, value, expire)
     

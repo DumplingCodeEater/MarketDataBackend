@@ -8,6 +8,8 @@ from app.schemas.prices import PollRequest, PollResponse, LatestPriceResponse
 from app.services.redis_cache import get_or_set_cache
 from app.core.database import get_db
 from sqlalchemy.orm import Session
+from app.services.kafka_service import publish_price_event
+from app.schemas.kafka_messages import PriceEventMessage
 
 router = APIRouter()
 
@@ -52,11 +54,20 @@ async def get_latest_price(
 
     # Use cache with 5-minute expiration
     cache_key = f"price:{symbol}:{provider}"
-    
+
     async def fetch_price():
         price = await market_data_provider.fetch_price(symbol.upper())
         if price is None:
             raise HTTPException(status_code=502, detail="Failed to fetch price from provider.")
+        # Publish to Kafka after fetching price
+        event = PriceEventMessage(
+            symbol=symbol.upper(),
+            price=price,
+            timestamp=datetime.utcnow(),
+            source=provider,
+            raw_response_id=uuid4()
+        )
+        publish_price_event(event)
         return price
 
     price = await get_or_set_cache(cache_key, fetch_price, expire=300)
