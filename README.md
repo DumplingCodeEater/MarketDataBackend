@@ -37,7 +37,7 @@ graph TB
     end
 
     subgraph "Data Storage"
-        DB[(PostgreSQL (db))]
+        DB["(PostgreSQL (db))"]
     end
 
     subgraph "Message Queue & Processing"
